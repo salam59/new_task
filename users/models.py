@@ -89,8 +89,8 @@ class Team(models.Model):
     leader_id = models.ForeignKey(CustomUser,on_delete=models.CASCADE,limit_choices_to={'role': 1})
     class Meta:
         unique_together = ("team_name","leader_id")
-    def __str__(self):
-        return self.team_name + "-->" + self.leader_id.first_name
+    # def __str__(self):
+    #     return self.team_name + "-->" + self.leader_id.first_name
 
 class Task(models.Model):
     task_name = models.CharField(max_length=50,blank=False)
@@ -98,6 +98,9 @@ class Task(models.Model):
     status = models.CharField(status_choices,default="Created",max_length=50)
     started_at = models.DateTimeField(auto_now_add=True)
     completed_at = models.DateTimeField(null=True,blank=True)
+
+    class Meta:
+        unique_together = ("task_name","team_id")
     @property
     def is_completed(self):
         return self.status == "Done"
@@ -114,7 +117,7 @@ class Task(models.Model):
 
 class TeamMember(models.Model):
     team_id = models.ForeignKey(Team,on_delete=models.CASCADE)
-    user_id = models.ForeignKey(CustomUser,on_delete=models.CASCADE,limit_choices_to=Q(role__in=[0,1]))
+    user_id = models.ForeignKey(CustomUser,on_delete=models.CASCADE,limit_choices_to=Q(role__in=[0]))
     class Meta:
         unique_together = ("team_id","user_id")
     
@@ -134,4 +137,7 @@ class TaskAssignment(models.Model):
     #     constraints = [
     #         models.UniqueConstraint(fields=["task_id","member_id"], name='unique__taskid_userid')
     #     ]
+
+    def __str__(self):
+        return self.task_id.task_name + " " + self.member_id.first_name
 

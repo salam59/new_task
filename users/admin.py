@@ -22,8 +22,13 @@ class TaskAdmin(admin.ModelAdmin):
     fields = ['task_name','team_id','status','completed_at']
     list_display = ['task_name','team_id','status']
 
+class TeamMemberAdmin(admin.ModelAdmin):
+    search_fields = ['team_id','user_id']
+    fields = ['team_id','user_id']
+    list_display = ['team_id','user_id']
+
 admin.site.register(CustomUser,UserAdmin)
 admin.site.register(Team,TeamAdmin)
 admin.site.register(Task,TaskAdmin)
-admin.site.register(TeamMember)
+admin.site.register(TeamMember,TeamMemberAdmin)
 admin.site.register(TaskAssignment)
