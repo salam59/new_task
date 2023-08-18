@@ -74,7 +74,7 @@ class TeamView(APIView):
             return Response(serialize.data,status=status.HTTP_201_CREATED)
         return Response(serialize.errors,status=status.HTTP_400_BAD_REQUEST)
     
-class TaskView(ListAPIView):
+class TaskView(ListAPIView,CreateAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     # def get(self,request):
@@ -86,11 +86,11 @@ class TaskView(ListAPIView):
 #     "task_name": "task-manager-api-2",
 #     "team_id":8
 # }
-    def post(self,request):
-        data = request.data
-        serialize = TaskSerializer(data=data)
-        # print(serialize.data)
-        if serialize.is_valid():
-            serialize.save()
-            return Response(serialize.data)
-        return Response(serialize.errors)
+    # def post(self,request):
+    #     data = request.data
+    #     serialize = TaskSerializer(data=data)
+    #     # print(serialize.data)
+    #     if serialize.is_valid():
+    #         serialize.save()
+    #         return Response(serialize.data)
+    #     return Response(serialize.errors)
