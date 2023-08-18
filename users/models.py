@@ -37,18 +37,18 @@ class CustomAccountManager(BaseUserManager):
         return self.create_user(user_name,email,password,role, **other_fields)
     
 role_choices = [
-        ('0','TeamMember'),
-        ('1','TeamLeader'),
-        ('2','Manager')
+        (0,'TeamMember'),
+        (1,'TeamLeader'),
+        (2,'Manager')
     ]
 status_choices = [
-    (1,'Created'),
-    (2,'Assigned'),
-    (3,'In Progress'),
-    (4,'Under review'),
-    (5,'Done')
+    ('Created','Created'),
+    ('Assigned','Assigned'),
+    ('In Progress','In Progress'),
+    ('Under review','Under review'),
+    ('Done','Done')
 ]
-class User(AbstractBaseUser):
+class CustomUser(AbstractBaseUser):
 
     user_name = models.CharField(max_length=50,unique=True,blank=False)
     email = models.EmailField(verbose_name='email address',
@@ -76,28 +76,36 @@ class User(AbstractBaseUser):
         return True
     def has_perm(self,app):
         return True
+    # def get_role(self):
+    #     if self.role == 0:
+    #         return "TeamMember"
+    #     elif self.role == 1:
+    #         return "TeamLeader"
+    #     return "Manager"
     
 class Team(models.Model):
     team_name = models.CharField(max_length=50,blank=False,unique=True)
     # one user can lead one team assumption
-    leader_id = models.ForeignKey(User,on_delete=models.CASCADE,limit_choices_to={'role':'1'})
+    leader_id = models.ForeignKey(CustomUser,on_delete=models.CASCADE,limit_choices_to={'role': 1})
     class Meta:
         unique_together = ("team_name","leader_id")
+    def __str__(self):
+        return self.team_name + "-->" + self.leader_id.first_name
 
 class Task(models.Model):
     task_name = models.CharField(max_length=50,blank=False)
     team_id = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True,related_name='tasks')
-    status = models.IntegerField(status_choices,default=1)
+    status = models.CharField(status_choices,default="Created",max_length=50)
     started_at = models.DateTimeField(auto_now_add=True)
     completed_at = models.DateTimeField(null=True,blank=True)
     @property
     def is_completed(self):
-        return self.status == 5
+        return self.status == "Done"
     
     def save(self, *args, **kwargs):
-        if self.status == 5 and not self.completed_at:
+        if self.status == "Done" and not self.completed_at:
             self.completed_at = timezone.now()
-        elif self.status != 5 :
+        elif self.status != "Done" :
             self.completed_at = None
         super().save(*args, **kwargs)
 
@@ -106,7 +114,7 @@ class Task(models.Model):
 
 class TeamMember(models.Model):
     team_id = models.ForeignKey(Team,on_delete=models.CASCADE)
-    user_id = models.ForeignKey(User,on_delete=models.CASCADE,limit_choices_to=Q(role__in=['0','1']))
+    user_id = models.ForeignKey(CustomUser,on_delete=models.CASCADE,limit_choices_to=Q(role__in=[0,1]))
     class Meta:
         unique_together = ("team_id","user_id")
     
@@ -120,7 +128,7 @@ class TeamMember(models.Model):
     #     ]
 class TaskAssignment(models.Model):
     task_id = models.ForeignKey(Task,on_delete=models.CASCADE)
-    member_id = models.ForeignKey(User,on_delete=models.CASCADE)
+    member_id = models.ForeignKey(CustomUser,on_delete=models.CASCADE,limit_choices_to={'role':0})
     class Meta:
         unique_together = ("task_id","member_id")
     #     constraints = [
