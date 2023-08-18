@@ -6,10 +6,12 @@ from rest_framework import status
 from users.models import (
     CustomUser,
     Team,
+    Task
 )
 from users.serializers import (
     UserSerializer,
     TeamSerializer,
+    TaskSerializer
 )
 # Create your views here.
 
@@ -36,10 +38,26 @@ class TeamView(APIView):
         return Response(serialize.data,status=status.HTTP_200_OK)
     def post(self,request):
         data = request.data
+        leader_user_name = data.get('leader_id')
+
+        try:
+            leader = CustomUser.objects.get(user_name=leader_user_name,role=1)
+            print(leader.user_name)
+        except CustomUser.DoesNotExist:
+            return Response({"error: User not found"},status=status.HTTP_400_BAD_REQUEST)
+
+         # Remove the leader_id from the data dictionary before passing to serializer
+        # data.pop('leader_id', None)
         serialize = TeamSerializer(data=data)
         if serialize.is_valid():
-            user_name = data.get("leader")
-            leader = CustomUser.objects.get(user_name=user_name)
-            instance = serialize.save(leader_id=leader)
+            # user_name = data.get("leader")
+            # leader = CustomUser.objects.get(user_name=user_name)
+            serialize.save(leader_id=leader)
             return Response(serialize.data,status=status.HTTP_201_CREATED)
-        return Response(serialize.errors)
+        return Response(serialize.errors,status=status.HTTP_400_BAD_REQUEST)
+    
+class TaskView(APIView):
+    def get(self,request):
+        tasks = Team.objects.all()
+        serialize = TeamSerializer(tasks,many=True)
+        return Response(serialize.data,status=status.HTTP_200_OK)

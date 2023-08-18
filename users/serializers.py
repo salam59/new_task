@@ -30,15 +30,30 @@ class UserSerializer(serializers.ModelSerializer):
         return validated_data
 
 class TeamSerializer(serializers.ModelSerializer):
-    leader_id = UserSerializer()
+    leader_id = UserSerializer(read_only=True)
     class Meta:
         model = Team
         fields = '__all__'
-    def validate(self, attrs):
-        team_id = attrs['leader_id']
-        if not CustomUser.objects.filter(id=team_id).exists():
+
+    def validate_leader_id(self,value):
+        leader = None
+        try:
+            leader = CustomUser.objects.get(user_name=value)
+        except:
             raise serializers.ValidationError("User doesn't exist")
-        return attrs
+        
+        if leader.role != 1:
+            raise serializers.ValidationError("User is not a Team leader")
+        
+        return leader
+    # def validate(self, validated_data):
+    #     leader = validated_data.pop('leader_id')
+
+    #     # if not CustomUser.objects.filter(id=team_id).exists():
+    #     #     raise serializers.ValidationError("User doesn't exist")
+
+    #     team = Team.objects.create(leader_id=leader,**validated_data)
+    #     return team
 
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
