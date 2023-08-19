@@ -11,13 +11,14 @@ from users.models import (
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['email','user_name','role','first_name']
+        fields = ['email', 'user_name', 'role', 'first_name', 'password']
+        extra_kwargs = {'password': {'write_only': True}}
+
         # exclude = (,'last_login','first_name','last_name','is_staff','is_active','is_superuser')
     
     def validate(self,data):
         email = data['email']
         user_name = data['user_name']
-
         if CustomUser.objects.filter(user_name=user_name).exists():
             raise serializers.ValidationError("username exists")
         
@@ -32,6 +33,21 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return validated_data
+    
+    def update(self,instance,validated_data):
+        password = validated_data.get("password")
+        print(password)
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.user_name = validated_data.get('user_name', instance.user_name)
+        instance.email = validated_data.get('email', instance.email)
+        instance.role = validated_data.get('role', instance.role)
+        instance.save()
+        
+        if password:
+            instance.set_password(password)
+            instance.save()
+            print("worked")
+        return instance
 
 class TeamSerializer(serializers.ModelSerializer):
     leader_id = UserSerializer(read_only=True)

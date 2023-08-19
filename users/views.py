@@ -2,9 +2,13 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.shortcuts import get_object_or_404
 from rest_framework.generics import (
     ListAPIView,
-    CreateAPIView
+    ListCreateAPIView,
+    RetrieveUpdateDestroyAPIView,
+    DestroyAPIView,
+    RetrieveAPIView
 ) 
 from django.shortcuts import get_object_or_404
 
@@ -20,13 +24,15 @@ from users.serializers import (
 )
 # Create your views here.
 
-class UserView(APIView):
-
-    def get(self,request):
-        users = CustomUser.objects.all()
-        serialize = UserSerializer(users,many=True)
-        return Response(serialize.data,status=status.HTTP_200_OK)
-        # return Response(serialize.errors)
+class UserView(ListCreateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+    lookup_field ='id'
+    # def get(self,request,id):
+    #     user = get_object_or_404(CustomUser,id=id)
+    #     serialize = UserSerializer(user,many=False)
+    #     return Response(serialize.data,status=status.HTTP_200_OK)
+    #     # return Response(serialize.errors)
     
 
     #  { POST 
@@ -36,26 +42,33 @@ class UserView(APIView):
     #     "role": 1,
     #     "password": "salahuddin"
     # }
-    def post(self,request):
-        data = request.data
-        serialize = UserSerializer(data=data)
-        if serialize.is_valid():
-            serialize.save()
-            return Response(serialize.data,status=status.HTTP_201_CREATED)
-        return Response(serialize.errors)
+    # def post(self,request):
+    #     data = request.data
+    #     serialize = UserSerializer(data=data)
+    #     if serialize.is_valid():
+    #         serialize.save()
+    #         return Response(serialize.data,status=status.HTTP_201_CREATED)
+    #     return Response(serialize.errors)
 
-class TeamView(APIView):
-    def get(self,request):
-        team = Team.objects.all()
-        serialize = TeamSerializer(team,many=True)
-        return Response(serialize.data,status=status.HTTP_200_OK)
+class UserDetailView(RetrieveUpdateDestroyAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+    lookup_field = "id"
+
+class TeamView(ListAPIView):
+    queryset = Team.objects.all()
+    serializer_class = TeamSerializer
+    # def get(self,request):
+    #     team = Team.objects.all()
+    #     serialize = TeamSerializer(team,many=True)
+    #     return Response(serialize.data,status=status.HTTP_200_OK)
     
 #      {POST
 #         "team_name": "NewOne11",
 #         "leader_id": "jk1"
 # }
-    def post(self,request):
-        data = request.data
+    def post(self,request): #if i don't use custom post new user is being created
+        data = request.data 
         leader_user_name = data.get('leader_id')
         leader = get_object_or_404(CustomUser,user_name=leader_user_name,role=1)
         # try:
@@ -74,7 +87,7 @@ class TeamView(APIView):
             return Response(serialize.data,status=status.HTTP_201_CREATED)
         return Response(serialize.errors,status=status.HTTP_400_BAD_REQUEST)
     
-class TaskView(ListAPIView,CreateAPIView):
+class TaskView(ListCreateAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     # def get(self,request):
