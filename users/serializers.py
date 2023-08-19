@@ -16,15 +16,15 @@ class UserSerializer(serializers.ModelSerializer):
 
         # exclude = (,'last_login','first_name','last_name','is_staff','is_active','is_superuser')
     
-    def validate(self,data):
-        email = data['email']
-        user_name = data['user_name']
-        if CustomUser.objects.filter(user_name=user_name).exists():
-            raise serializers.ValidationError("username exists")
+    # def validate(self,data):
+    #     email = data['email']
+    #     user_name = data['user_name']
+    #     if CustomUser.objects.filter(user_name=user_name).exists():
+    #         raise serializers.ValidationError("username exists")
         
-        if CustomUser.objects.filter(email=email).exists():
-            raise serializers.ValidationError("email exists")
-        return data
+    #     if CustomUser.objects.filter(email=email).exists():
+    #         raise serializers.ValidationError("email exists")
+    #     return data
     
     def create(self, validated_data):
         first_name = validated_data.get("first_name")

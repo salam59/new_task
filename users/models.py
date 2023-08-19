@@ -89,8 +89,8 @@ class Team(models.Model):
     leader_id = models.ForeignKey(CustomUser,on_delete=models.CASCADE,limit_choices_to={'role': 1})
     class Meta:
         unique_together = ("team_name","leader_id")
-    # def __str__(self):
-    #     return self.team_name + "-->" + self.leader_id.first_name
+    def __str__(self):
+        return self.team_name #+ "-->" + self.leader_id.first_name
 
 class Task(models.Model):
     task_name = models.CharField(max_length=50,blank=False)
