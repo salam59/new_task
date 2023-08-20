@@ -86,7 +86,7 @@ class CustomUser(AbstractBaseUser):
 class Team(models.Model):
     team_name = models.CharField(max_length=50,blank=False,unique=True)
     # one user can lead one team assumption
-    leader_id = models.ForeignKey(CustomUser,on_delete=models.CASCADE,limit_choices_to={'role': 1})
+    leader_id = models.ForeignKey(CustomUser,on_delete=models.CASCADE,limit_choices_to={'role': 1},related_name="team")
     class Meta:
         unique_together = ("team_name","leader_id")
     def __str__(self):
@@ -117,12 +117,12 @@ class Task(models.Model):
 
 class TeamMember(models.Model):
     team_id = models.ForeignKey(Team,on_delete=models.CASCADE)
-    user_id = models.ForeignKey(CustomUser,on_delete=models.CASCADE,limit_choices_to=Q(role__in=[0]))
+    user_id = models.ForeignKey(CustomUser,on_delete=models.CASCADE,limit_choices_to=Q(role__in=[0]),related_name="teammember")
     class Meta:
         unique_together = ("team_id","user_id")
     
-    def __str__(self):
-        return self.user_id.first_name
+    # def __str__(self):
+    #     return self.user_id.first_name
     #  two fields together form a unique combination by using the unique_together 
     # option within the model's Meta class.
     # class Meta:

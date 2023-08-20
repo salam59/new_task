@@ -4,7 +4,9 @@ from users.views import(
     # UserDetailView,
     TeamView,
     TaskView,
-    TeamDetailView
+    TeamDetailView,
+    # TeamMemberView,
+    # TaskAssignmentView
 )
 from rest_framework.routers import DefaultRouter
 
@@ -12,6 +14,8 @@ router = DefaultRouter()
 router.register(r'users',UserView)
 router.register(r'team-details',TeamDetailView)
 router.register(r'task',TaskView)
+# router.register(r'task-assignment',TaskAssignmentView)
+# router.register(r'team-members',TeamMemberView)
 urlpatterns = [
     
     # path("users/",UserView.as_view(),name="users"),

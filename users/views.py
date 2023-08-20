@@ -26,12 +26,16 @@ from django.shortcuts import get_object_or_404
 from users.models import (
     CustomUser,
     Team,
-    Task
+    Task,
+    # TeamMember,
+    # TaskAssignment
 )
 from users.serializers import (
     UserSerializer,
     TeamSerializer,
-    TaskSerializer
+    TaskSerializer,
+    # TeamMemberSerializer,
+    # TaskAssignmentSerializer
 )
 # Create your views here.
 
@@ -97,6 +101,7 @@ class TeamView(ListAPIView):
         if serialize.is_valid():
             # user_name = data.get("leader")
             # leader = CustomUser.objects.get(user_name=user_name)
+            # print(serialize.data)
             serialize.save(leader_id=leader)
             return Response(serialize.data,status=status.HTTP_201_CREATED)
         return Response(serialize.errors,status=status.HTTP_400_BAD_REQUEST)
@@ -148,7 +153,7 @@ class TaskView(ModelViewSet):
     #     tasks = Task.objects.all()
     #     serialize = TaskSerializer(tasks,many=True)
     #     return Response(serialize.data,status=status.HTTP_200_OK)
-    
+
     #post and put
 # {
 #     "task_name": "task-manager-api-2",
@@ -162,3 +167,12 @@ class TaskView(ModelViewSet):
     #         serialize.save()
     #         return Response(serialize.data)
     #     return Response(serialize.errors)
+
+# class TeamMemberView(ModelViewSet):
+#     queryset = TeamMember.objects.all()
+#     serializer_class = TeamMemberSerializer
+
+# class TaskAssignmentView(ModelViewSet):
+#     queryset = TaskAssignment.objects.all()
+#     serializer_class = TaskAssignmentSerializer
+    
