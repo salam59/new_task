@@ -20,7 +20,7 @@ class UserAdmin(admin.ModelAdmin):
 class TaskAdmin(admin.ModelAdmin):
     search_fields = ['task_name','team_id']
     fields = ['task_name','team_id','status','completed_at']
-    list_display = ['task_name','team_id','status']
+    list_display = ['id','task_name','team_id','status']
 
 class TeamMemberAdmin(admin.ModelAdmin):
     search_fields = ['team_id','user_id']

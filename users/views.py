@@ -141,7 +141,7 @@ class TeamDetailView(GenericViewSet,RetrieveModelMixin,DestroyModelMixin):
         return Response(serialize.errors,status=status.HTTP_400_BAD_REQUEST)
 
 
-class TaskView(ListCreateAPIView):
+class TaskView(ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     # def get(self,request):
@@ -149,6 +149,7 @@ class TaskView(ListCreateAPIView):
     #     serialize = TaskSerializer(tasks,many=True)
     #     return Response(serialize.data,status=status.HTTP_200_OK)
     
+    #post and put
 # {
 #     "task_name": "task-manager-api-2",
 #     "team_id":8

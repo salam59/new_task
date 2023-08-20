@@ -103,9 +103,10 @@ class TaskSerializer(serializers.ModelSerializer):
         model = Task
         fields = ['task_name','team_id','team_members']
     def validate(self, attrs):
-        team_id = attrs['team_id'].id #DON'T KNOW WHY BUT GETTING OBJECT INSTEAD OF ID SO IMPROVISED
-        if not Team.objects.filter(id=team_id).exists():
-            raise serializers.ValidationError("User doesn't exist")
+        if "team_id" in attrs: # for Patch to work, we may not send team_id during patch
+            team_id = attrs['team_id'].id #DON'T KNOW WHY BUT GETTING OBJECT INSTEAD OF ID SO IMPROVISED
+            if not Team.objects.filter(id=team_id).exists():
+                raise serializers.ValidationError("User doesn't exist")
         return attrs
     
     def get_team_members(self,obj):
