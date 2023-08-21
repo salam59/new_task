@@ -6,7 +6,7 @@ from users.views import(
     TaskView,
     TeamDetailView,
     # TeamMemberView,
-    # TaskAssignmentView
+    TaskAssignmentView
 )
 from rest_framework.routers import DefaultRouter
 
@@ -14,7 +14,7 @@ router = DefaultRouter()
 router.register(r'users',UserView)
 router.register(r'team-details',TeamDetailView)
 router.register(r'task',TaskView)
-# router.register(r'task-assignment',TaskAssignmentView)
+router.register(r'task-assignment',TaskAssignmentView)
 # router.register(r'team-members',TeamMemberView)
 urlpatterns = [
     

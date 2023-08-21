@@ -28,14 +28,14 @@ from users.models import (
     Team,
     Task,
     # TeamMember,
-    # TaskAssignment
+    TaskAssignment
 )
 from users.serializers import (
     UserSerializer,
     TeamSerializer,
     TaskSerializer,
     # TeamMemberSerializer,
-    # TaskAssignmentSerializer
+    TaskAssignmentSerializer
 )
 # Create your views here.
 
@@ -106,7 +106,7 @@ class TeamView(ListAPIView):
             return Response(serialize.data,status=status.HTTP_201_CREATED)
         return Response(serialize.errors,status=status.HTTP_400_BAD_REQUEST)
     
-class TeamDetailView(GenericViewSet,RetrieveModelMixin,DestroyModelMixin):
+class TeamDetailView(ModelViewSet):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
     lookup_field = 'id'
@@ -117,33 +117,33 @@ class TeamDetailView(GenericViewSet,RetrieveModelMixin,DestroyModelMixin):
     # and then update in the Team instance,as we did in the POST method
     # (LOOK in the POST method to understand)
 
-    def put(self,request,id):
-        data = request.data
-        # print(data)
-        user_name = data.get("leader_id")
-        leader = get_object_or_404(CustomUser,user_name=user_name,role=1)
+    # def put(self,request,id):
+    #     data = request.data
+    #     # print(data)
+    #     user_name = data.get("leader_id")
+    #     leader = get_object_or_404(CustomUser,user_name=user_name,role=1)
 
-        serialize = TeamSerializer(data=data)
-        if serialize.is_valid():
-            serialize.save(leader_id=leader)
-            return Response(serialize.data,status=status.HTTP_201_CREATED)
-        return Response(serialize.errors,status=status.HTTP_400_BAD_REQUEST)
+    #     serialize = TeamSerializer(data=data)
+    #     if serialize.is_valid():
+    #         serialize.save(leader_id=leader)
+    #         return Response(serialize.data,status=status.HTTP_201_CREATED)
+    #     return Response(serialize.errors,status=status.HTTP_400_BAD_REQUEST)
     
-    def patch(self,request,id):
-        data = request.data
-        # print(data)
-        obj = Team.objects.get(id=id)
-        user_name = data.get("leader_id")
-        if user_name:
-            leader = get_object_or_404(CustomUser,user_name=user_name,role=1)
-            data['leader_id'] = leader
+    # def patch(self,request,id):
+    #     data = request.data
+    #     # print(data)
+    #     obj = Team.objects.get(id=id)
+    #     user_name = data.get("leader_id")
+    #     if user_name:
+    #         leader = get_object_or_404(CustomUser,user_name=user_name,role=1)
+    #         data['leader_id'] = leader
         
-
-        serialize = TeamSerializer(obj,data=data,partial=True)
-        if serialize.is_valid():
-            serialize.save()
-            return Response(serialize.data,status=status.HTTP_201_CREATED)
-        return Response(serialize.errors,status=status.HTTP_400_BAD_REQUEST)
+    #     # this is a way of updating already existing team object using serializer
+    #     serialize = TeamSerializer(obj,data=data,partial=True) 
+    #     if serialize.is_valid():
+    #         serialize.save()
+    #         return Response(serialize.data,status=status.HTTP_201_CREATED)
+    #     return Response(serialize.errors,status=status.HTTP_400_BAD_REQUEST)
 
 
 class TaskView(ModelViewSet):
@@ -172,7 +172,7 @@ class TaskView(ModelViewSet):
 #     queryset = TeamMember.objects.all()
 #     serializer_class = TeamMemberSerializer
 
-# class TaskAssignmentView(ModelViewSet):
-#     queryset = TaskAssignment.objects.all()
-#     serializer_class = TaskAssignmentSerializer
+class TaskAssignmentView(ModelViewSet):
+    queryset = TaskAssignment.objects.all()
+    serializer_class = TaskAssignmentSerializer
     

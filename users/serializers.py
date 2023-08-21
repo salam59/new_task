@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from django.shortcuts import get_object_or_404
 from users.models import (
     CustomUser,
     Team,
@@ -91,10 +91,42 @@ class TeamSerializer(serializers.ModelSerializer):
         print(team_members)
         team = Team.objects.create(**validated_data)
         for member in team_members:
-            member_data = CustomUser.objects.get(id=member)
+            member_data = get_object_or_404(CustomUser,id=member,role=0)
             TeamMember.objects.create(team_id=team,user_id=member_data)
         return team
     
+    def update(self, instance, validated_data):
+        instance.team_name = validated_data.get("team_name",instance.team_name)
+        # Leader Updation
+        user_name = self.initial_data.get("leader_id")
+        if user_name:
+            leader = get_object_or_404(CustomUser,user_name=user_name,role=1)
+            instance.leader_id = leader
+
+        # Members updation
+        add_members = self.initial_data.get("members-add")
+        
+        #addition team member, only add if the role is 0 and user is present
+        for member_id in add_members:
+            member_obj = get_object_or_404(CustomUser,id=member_id,role=0)
+            check_if_present = TeamMember.objects.get(team_id=instance,user_id=member_obj)
+            if check_if_present:
+                print(f"{member_obj} is already present,")
+            else:
+                TeamMember.objects.create(team_id = instance,user_id = member_obj)
+
+        # removal of members, if present remove else ignore, TeamMember instance should be removed
+        remove_members = self.initial_data.get("members-remove")
+        team_member_instances = TeamMember.objects.filter(team_id=instance.id)
+        for member_instance in team_member_instances:
+            if member_instance.user_id.id in remove_members:
+    # when deleting a teammember we must make sure to delete the taskassignment instance of that member
+                member_instance.delete()
+                print('done teammembers')
+        # task_assignment_instances = TaskAssignment.objects.filter("")
+        instance.save()
+        return instance
+
 
         
 
@@ -138,7 +170,7 @@ class TaskSerializer(serializers.ModelSerializer):
         for member_id in assignments:
             # print(member_id)
             if member_id in team_members_user_ids:
-                member_obj = CustomUser.objects.get(id=member_id)
+                member_obj = get_object_or_404(CustomUser,id=member_id,role=0)
                 TaskAssignment.objects.create(task_id = task,member_id=member_obj)
             else:
                 raise serializers.ValidationError(f"{member_id} is  not part of team {team_id}")
@@ -151,8 +183,8 @@ class TaskSerializer(serializers.ModelSerializer):
         instance.status = validated_data.get("status",instance.status)
         remove_users = self.initial_data.get("assignments-remove")
         add_users = self.initial_data.get( "assignments-add")
-        print(remove_users)
-        print(add_users)
+        # print(remove_users)
+        # print(add_users)
 
         #Getting all the taskassignments of the current task
         task_assignments = TaskAssignment.objects.filter(task_id = instance.id )
@@ -172,7 +204,7 @@ class TaskSerializer(serializers.ModelSerializer):
             for member_id in add_users:
                 # print(member_id)
                 if member_id in team_members_user_ids:
-                    member_obj = CustomUser.objects.get(id=member_id)
+                    member_obj = get_object_or_404(CustomUser,id=member_id,role=0)
                     TaskAssignment.objects.create(task_id = instance,member_id=member_obj)
                 else:
                     raise serializers.ValidationError(f"{member_id} is  not part of team {team_id}")
@@ -197,10 +229,12 @@ class TaskSerializer(serializers.ModelSerializer):
 #         model = TeamMember
 #         fields = "__all__"
 
-# class TaskAssignmentSerializer(serializers.Serializer):
-#     class Meta:
-#         model = TaskAssignment
-#         fields= ['task_id','member_id']  
+class TaskAssignmentSerializer(serializers.Serializer):
+    task_name = serializers.CharField(source='task_id.task_name')
+    user_name = serializers.CharField(source="member_id.user_name")
+    class Meta:
+        model = TaskAssignment
+        fields= ['task_id','member_id','task_name','user_name']  
 
 # If the TeamMember and TaskAssignment models primarily hold references to other models through foreign key relationships,
 # and their data can be updated or created based on the IDs of existing models, you can indeed manage with custom create 

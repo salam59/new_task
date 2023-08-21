@@ -130,7 +130,7 @@ class TeamMember(models.Model):
     #         models.UniqueConstraint(fields=["team_id","user_id"], name='unique__teamid_userid')
     #     ]
 class TaskAssignment(models.Model):
-    task_id = models.ForeignKey(Task,on_delete=models.CASCADE)
+    task_id = models.ForeignKey(Task,on_delete=models.CASCADE,related_name='task')
     member_id = models.ForeignKey(CustomUser,on_delete=models.CASCADE,limit_choices_to={'role':0})
     class Meta:
         unique_together = ("task_id","member_id")
