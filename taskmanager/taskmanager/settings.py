@@ -127,7 +127,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.CustomUser'
 
 
-CELERY_BROKER_URL = 'rediss://red-cji5cob37aks73dist3g:kYLROfEoIP3xxHsZzbbHnlLpNfh9Pdcw@oregon-redis.render.com:6379'
+CELERY_BROKER_URL = ''
 
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
