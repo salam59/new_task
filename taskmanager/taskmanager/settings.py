@@ -141,18 +141,7 @@ EMAIL_USE_TLS = True
 #add the port number of the email server
 EMAIL_PORT = 587
 #add your gamil here
-EMAIL_HOST_USER = 'salam170059@gmail.com'
+EMAIL_HOST_USER = 'enter your mail'
 #add your password here
 EMAIL_HOST_PASSWORD = 'zgkoxydkhfmkiehz'
-# DEFAULT_FROM_EMAIL='Celery <salam170059@gmail.com>'
-
-# CELERY_BEAT_SCHEDULE = {
-#     'schedule_task':{
-#         "task": "users.tasks.send_notification_email",
-#         "schedule": 5.0,
-#         "args":(
-#             ["salahuddinpalagiri@gmail.com","jaswanth@msitprogram.net","dasarijayakrishna4321@msitprogram.net","sreedivya@msitprogram.net"],
-#             "added to team"
-#         ),
-#     },
-# }
+DEFAULT_FROM_EMAIL='Celery <salam170059@gmail.com>'
