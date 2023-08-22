@@ -127,7 +127,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.CustomUser'
 
 
-CELERY_BROKER_URL = ''
+CELERY_BROKER_URL = 'enter your reddis or local url'
 
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
@@ -144,4 +144,5 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'enter your mail'
 #add your password here
 EMAIL_HOST_PASSWORD = 'enter your password'
-DEFAULT_FROM_EMAIL='Celery <salam170059@gmail.com>'
+DEFAULT_FROM_EMAIL=''
+
