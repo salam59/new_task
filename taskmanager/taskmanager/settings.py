@@ -125,3 +125,20 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.CustomUser'
 CELERY_BROKER_URL = 'amqp://localhost'
+
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Kolkata'
+
+EMAIL_BACKEND ='django.core.mail.backends.smtp.EmailBackend'
+#add your host of the email here in this case its Gmail so we are going to use Gmail host
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+#add the port number of the email server
+EMAIL_PORT = 587
+#add your gamil here
+EMAIL_HOST_USER = 'salam170059@gmail.com'
+#add your password here
+EMAIL_HOST_PASSWORD = 'zgkoxydkhfmkiehz'
+DEFAULT_FROM_EMAIL='Celery <salam170059@gmail.com>'

@@ -103,7 +103,11 @@ class TeamView(ListAPIView):
             # leader = CustomUser.objects.get(user_name=user_name)
             # print(serialize.data)
             serialize.save(leader_id=leader)
-            return Response(serialize.data,status=status.HTTP_201_CREATED)
+            response_data = {
+            'message': "Sent emails Successfully",  # Your custom message
+            'data': serialize.data,  # Serialized data
+            }
+            return Response(response_data)
         return Response(serialize.errors,status=status.HTTP_400_BAD_REQUEST)
     
 class TeamDetailView(ModelViewSet):

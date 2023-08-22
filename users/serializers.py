@@ -7,6 +7,7 @@ from users.models import (
     TeamMember,
     TaskAssignment
 )
+from users.tasks import send_notification_email
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -90,9 +91,12 @@ class TeamSerializer(serializers.ModelSerializer):
         team_members = self.initial_data.get("team_members") #list of ids of users
         print(team_members)
         team = Team.objects.create(**validated_data)
+        emails = []
         for member in team_members:
             member_data = get_object_or_404(CustomUser,id=member,role=0)
             TeamMember.objects.create(team_id=team,user_id=member_data)
+            emails.append(member_data.email)
+        send_notification_email.delay(emails,team.team_name)
         return team
     
     def update(self, instance, validated_data):
