@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'users',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -124,7 +125,9 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.CustomUser'
-CELERY_BROKER_URL = 'amqp://localhost'
+
+
+CELERY_BROKER_URL = 'rediss://red-cji5cob37aks73dist3g:kYLROfEoIP3xxHsZzbbHnlLpNfh9Pdcw@oregon-redis.render.com:6379'
 
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
@@ -141,4 +144,15 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'salam170059@gmail.com'
 #add your password here
 EMAIL_HOST_PASSWORD = 'zgkoxydkhfmkiehz'
-DEFAULT_FROM_EMAIL='Celery <salam170059@gmail.com>'
+# DEFAULT_FROM_EMAIL='Celery <salam170059@gmail.com>'
+
+# CELERY_BEAT_SCHEDULE = {
+#     'schedule_task':{
+#         "task": "users.tasks.send_notification_email",
+#         "schedule": 5.0,
+#         "args":(
+#             ["salahuddinpalagiri@gmail.com","jaswanth@msitprogram.net","dasarijayakrishna4321@msitprogram.net","sreedivya@msitprogram.net"],
+#             "added to team"
+#         ),
+#     },
+# }
