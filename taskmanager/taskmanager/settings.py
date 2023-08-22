@@ -143,5 +143,18 @@ EMAIL_PORT = 587
 #add your gamil here
 EMAIL_HOST_USER = 'enter your mail'
 #add your password here
-EMAIL_HOST_PASSWORD = 'zgkoxydkhfmkiehz'
+EMAIL_HOST_PASSWORD = 'enter your password'
 DEFAULT_FROM_EMAIL='Celery <salam170059@gmail.com>'
+
+# DEFAULT_FROM_EMAIL='Celery <salam170059@gmail.com>'
+
+# CELERY_BEAT_SCHEDULE = {
+#     'schedule_task':{
+#         "task": "users.tasks.send_notification_email",
+#         "schedule": 5.0,
+#         "args":(
+#             ["salahuddinpalagiri@gmail.com","jaswanth@msitprogram.net","dasarijayakrishna4321@msitprogram.net","sreedivya@msitprogram.net"],
+#             "added to team"
+#         ),
+#     },
+# }
