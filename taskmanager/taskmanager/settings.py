@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'users',
     'django_celery_beat',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -102,6 +103,20 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework.authentication.TokenAuthentication',  # Use Token Authentication
+        # 'rest_framework.authentication.SessionAuthentication',  # Use Session Authentication
+        "rest_framework.authentication.BasicAuthentication"
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+    # Other settings...
+}
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
@@ -127,12 +142,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.CustomUser'
 
 
-CELERY_BROKER_URL = 'enter your reddis or local url'
+CELERY_BROKER_URL = 'amqp://localhost'
 
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Kolkata'
+CELERY_RESULT_BACKEND = 'django-db'
 
 EMAIL_BACKEND ='django.core.mail.backends.smtp.EmailBackend'
 #add your host of the email here in this case its Gmail so we are going to use Gmail host
@@ -141,8 +157,8 @@ EMAIL_USE_TLS = True
 #add the port number of the email server
 EMAIL_PORT = 587
 #add your gamil here
-EMAIL_HOST_USER = 'enter your mail'
+EMAIL_HOST_USER = 'salam170059@gmail.com'
 #add your password here
-EMAIL_HOST_PASSWORD = 'enter your password'
+EMAIL_HOST_PASSWORD = 'zgkoxydkhfmkiehz'
 DEFAULT_FROM_EMAIL=''
 

@@ -1,0 +1,8 @@
+
+TASK-PUT
+{
+    "task_name": "pipeline-task-changed",
+    "team_id":32,
+    "assignments-add":[13],
+    "assignements-remove":[12]
+}

@@ -1,0 +1,25 @@
+User-POST
+   {
+        "email": "dasarivenkatesh@gmain.net",
+        "user_name": "venky",
+        "role": 0,
+        "first_name": "venka",
+        "password": "password"
+    }
+
+
+
+TASK-PUT
+{
+    "task_name": "pipeline-task-changed",
+    "team_id":32,
+    "assignments-add":[13],
+    "assignements-remove":[12]
+}
+
+Team-Patch
+{
+    "team_name": "Rest-rabbit-MQ-1-an",
+    // "leader_id": "jk1",
+    "members-add": [32]
+}
