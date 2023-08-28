@@ -6,7 +6,23 @@ User-POST
         "first_name": "venka",
         "password": "password"
     }
+update - user
+{
+    // "email": "jk@gmail.com",
+    // "user_name": "jk1",
+    // "role": 1,
+    // "first_name": "kris2hhna",
+    // "password":"password"
+}
 
+TEAM 
+
+post{
+    "team_name": "Rest-rabbit-MQ-1-an",
+    "leader_id": "jk1"
+    // "members-remove": [32]
+    members-add : [12,131]
+}
 
 
 TASK-PUT

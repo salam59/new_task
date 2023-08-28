@@ -94,7 +94,9 @@ class TeamSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         team_members = self.initial_data.get("team_members") #list of ids of users
         print(team_members)
+        print(validated_data)
         team = Team.objects.create(**validated_data)
+        print(team)
         emails = []
         if team_members:
             for member in team_members:
@@ -115,25 +117,26 @@ class TeamSerializer(serializers.ModelSerializer):
 
         # Members updation
         add_members = self.initial_data.get("members-add")
-        
+        if add_members:
         #addition team member, only add if the role is 0 and user is present
-        for member_id in add_members:
-            member_obj = get_object_or_404(CustomUser,id=member_id,role=0)
-            # check_if_present = TeamMember.objects.get(team_id=instance,user_id=member_obj)
-            check_if_present = TeamMember.objects.filter(team_id=instance,user_id=member_obj)
-            if check_if_present:
-                print(f"{member_obj} is already present,")
-            else:
-                TeamMember.objects.create(team_id = instance,user_id = member_obj)
+            for member_id in add_members:
+                member_obj = get_object_or_404(CustomUser,id=member_id,role=0)
+                # check_if_present = TeamMember.objects.get(team_id=instance,user_id=member_obj)
+                check_if_present = TeamMember.objects.filter(team_id=instance,user_id=member_obj)
+                if check_if_present:
+                    print(f"{member_obj} is already present,")
+                else:
+                    TeamMember.objects.create(team_id = instance,user_id = member_obj)
 
         # removal of members, if present remove else ignore, TeamMember instance should be removed
         remove_members = self.initial_data.get("members-remove")
-        team_member_instances = TeamMember.objects.filter(team_id=instance.id)
-        for member_instance in team_member_instances:
-            if member_instance.user_id.id in remove_members:
-    # when deleting a teammember we must make sure to delete the taskassignment instance of that member
-                member_instance.delete()
-                print('done teammembers')
+        if remove_members:
+            team_member_instances = TeamMember.objects.filter(team_id=instance.id)
+            for member_instance in team_member_instances:
+                if member_instance.user_id.id in remove_members:
+        # when deleting a teammember we must make sure to delete the taskassignment instance of that member
+                    member_instance.delete()
+                    print('done teammembers')
         # task_assignment_instances = TaskAssignment.objects.filter("")
         instance.save()
         return instance

@@ -63,7 +63,7 @@ class UserView(ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     lookup_field ='id'
-    permission_classes =[permissions.managerPermission]
+    permission_classes = [permissions.managerPermission | permissions.leaderUserPermission]
     # def get(self,request,id):
     #     user = get_object_or_404(CustomUser,id=id)
     #     serialize = UserSerializer(user,many=False)
@@ -95,7 +95,7 @@ class TeamView(ListAPIView):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
     lookup_field = 'id'
-    permission_classes = [permissions.managerPermission]
+    permission_classes = [permissions.managerPermission | permissions.leaderTeamPermission]
     
     # def get(self,request):
     #     team = Team.objects.all()
@@ -135,13 +135,36 @@ class TeamDetailView(ModelViewSet):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
     lookup_field = 'id'
-    permission_classes = [permissions.managerPermission ]
+    permission_classes = [permissions.managerPermission | permissions.leaderTeamPermission]
     #NOTE: if want to update team members,can do it in it's own model, we are retrieving teammembers from model
     # FOR LEADER_ID updation(PUT REQUEST), need to define the function manually
     # because if we want to change the leader we need to get the respective leader(from USER) details
     # and then update in the Team instance,as we did in the POST method
     # (LOOK in the POST method to understand)
+    def post(self,request): #if i don't use custom post new user is being created
+        data = request.data 
+        leader_user_name = data.get('leader_id')
+        leader = get_object_or_404(CustomUser,user_name=leader_user_name,role=1)
+        # try:
+        #     leader = CustomUser.objects.get(user_name=leader_user_name,role=1)
+        #     print(leader.user_name)
+        # except CustomUser.DoesNotExist:
+        #     return Response({"error: User not found"},status=status.HTTP_400_BAD_REQUEST)
 
+         # Remove the leader_id from the data dictionary before passing to serializer
+        # data.pop('leader_id', None)
+        serialize = TeamSerializer(data=data)
+        if serialize.is_valid():
+            # user_name = data.get("leader")
+            # leader = CustomUser.objects.get(user_name=user_name)
+            # print(serialize.data)
+            serialize.save(leader_id=leader)
+            response_data = {
+            'message': "Sent emails Successfully",  # Your custom message
+            'data': serialize.data,  # Serialized data
+            }
+            return Response(response_data)
+        return Response(serialize.errors,status=status.HTTP_400_BAD_REQUEST)
     # def put(self,request,id):
     #     data = request.data
     #     # print(data)

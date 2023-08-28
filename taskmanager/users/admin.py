@@ -10,11 +10,11 @@ from users.models import(
 class TeamAdmin(admin.ModelAdmin):
     search_fields = ['team_name']
     fields = ["team_name","leader_id"]
-    list_display = ["team_name","leader_id"]
+    list_display = ["id","team_name","leader_id"]
 # Register your models here.
 class UserAdmin(admin.ModelAdmin):
     search_fields=['email','user_name']
-    fields = ['first_name','user_name',"email","password","role"]
+    # fields = ['first_name','user_name',"email","password","role"]
     list_display= ['id','first_name',"email","role"]
 
 class TaskAdmin(admin.ModelAdmin):
@@ -30,7 +30,7 @@ class TeamMemberAdmin(admin.ModelAdmin):
 class TaskAssignmentAdmin(admin.ModelAdmin):
     list_display = ['task_id','member_id']
 
-admin.site.register(CustomUser)
+admin.site.register(CustomUser,UserAdmin)
 admin.site.register(Team,TeamAdmin)
 admin.site.register(Task,TaskAdmin)
 admin.site.register(TeamMember,TeamMemberAdmin)
